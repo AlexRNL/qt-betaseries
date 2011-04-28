@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QHttp>
 
 namespace Ui {
     class MainWindow;
@@ -17,6 +18,11 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QHttp *http;
+
+private slots:
+    void on__sendRequest_clicked();
+    void updateForm (bool);
 };
 
 #endif // MAINWINDOW_H
