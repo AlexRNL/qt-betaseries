@@ -19,12 +19,11 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QHttp *http;
     Betaseries* betaserie;
 
 private slots:
     void on__sendRequest_clicked();
-    void updateForm (bool);
+    void updateForm (bool error, QString data);
 };
 
 #endif // MAINWINDOW_H

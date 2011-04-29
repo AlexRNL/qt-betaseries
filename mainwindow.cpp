@@ -8,10 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/icons/favicon"));
-    http = new QHttp(this);
     betaserie = Betaseries::getInstance(this);
 
-    connect(http, SIGNAL(done(bool)), this, SLOT(updateForm(bool)));
+    connect(betaserie, SIGNAL(done(bool,QString)), this, SLOT(updateForm(bool,QString)));
 }
 
 MainWindow::~MainWindow()
@@ -21,7 +20,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on__sendRequest_clicked()
 {
-    QUrl url;
+    /*QUrl url;
     url.setPath("/shows/episodes/detectiveconan.xml");
 
     url.addQueryItem("key", "4b4b65a6071d");
@@ -30,13 +29,14 @@ void MainWindow::on__sendRequest_clicked()
     //url.addQueryItem("episode", "4");
 
     http->setHost("api.betaseries.com");
-    http->get(url.toString());
+    http->get(url.toString());//*/
+    betaserie->getStatus();
     ui->_result->setText("Sending...");
 }
 
-void MainWindow::updateForm (bool error) {
+void MainWindow::updateForm (bool error, QString data) {
     if (!error) {
-        ui->_result->setText(http->readAll());
+        ui->_result->setText(data);
     } else {
         ui->_result->setText("Fail...");
     }
