@@ -4,10 +4,10 @@
 #include <QObject>
 #include <QHttp>
 
-#define DOMAIN api.betaseries.com
+#define DOMAIN "api.betaseries.com"
 #define PORT_HTTP 80
-#define KEY 4b4b65a6071d
-#define USER_AGENT QtBetaseries
+#define KEY "4b4b65a6071d"
+#define USER_AGENT "QtBetaseries"
 
 /**
   * Class which handles the requests to the API of Betaseries.
@@ -18,6 +18,7 @@ class Betaseries : public QObject {
     Q_OBJECT
 public:
     static Betaseries* getInstance(QObject *parent = 0);
+    void getStatus ();
 
 private:
     ///Construtor
@@ -25,13 +26,14 @@ private:
     ///Methods
 
     //Attributes
+    QHttp* _api;
     static Betaseries* _instance;
-    QHttp *_api;
 
 signals:
-    void done (bool error);
+    void done (bool error, QString data);
 
 public slots:
+    void received (bool error);
 
 };
 
