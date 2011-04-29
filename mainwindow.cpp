@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowIcon(QIcon(":/icons/favicon"));
     http = new QHttp(this);
+    betaserie = Betaseries::getInstance(this);
 
     connect(http, SIGNAL(done(bool)), this, SLOT(updateForm(bool)));
 }
