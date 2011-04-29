@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QHttp>
+#include "betaseries.h"
 
 namespace Ui {
     class MainWindow;
@@ -19,6 +20,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QHttp *http;
+    Betaseries* betaserie;
 
 private slots:
     void on__sendRequest_clicked();
