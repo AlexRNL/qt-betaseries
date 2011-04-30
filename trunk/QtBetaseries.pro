@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network xml
 
 TARGET = QtBetaseries
 TEMPLATE = app
@@ -12,10 +12,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    betaseries.cpp
+    betaseries.cpp \
+    showresult.cpp
 
 HEADERS  += mainwindow.h \
-    betaseries.h
+    betaseries.h \
+    showresult.h
 
 FORMS    += mainwindow.ui
 

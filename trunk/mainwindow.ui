@@ -40,7 +40,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="searchInput">
+   <widget class="QLineEdit" name="_searchInput">
     <property name="geometry">
      <rect>
       <x>60</x>
