@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include <QHttp>
+#include <QList>
+
+#include "showresult.h"
 
 #define DOMAIN "api.betaseries.com"
 #define PORT_HTTP 80
@@ -19,6 +22,7 @@ class Betaseries : public QObject {
 public:
     static Betaseries* getInstance(QObject *parent = 0);
     void getStatus ();
+    QList<ShowResult> searchShow(QString search);
 
 private:
     ///Construtor
@@ -31,9 +35,11 @@ private:
 
 signals:
     void done (bool error, QString data);
+    void requestStarted (int id);
 
 public slots:
-    void received (bool error);
+    void received (int id, bool error);
+    void sent (int id);
 
 };
 
