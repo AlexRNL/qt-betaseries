@@ -17,16 +17,6 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on__sendRequest_clicked() {
-    /*QUrl url;
-    url.setPath("/shows/episodes/detectiveconan.xml");
-
-    url.addQueryItem("seasons", "");
-    //url.addQueryItem("episode", "4");
-
-    http->setHost("api.betaseries.com");
-    http->get(url.toString());//*/
-    //betaserie->getStatus();
-
     if (ui->_searchInput->text().isEmpty())
         return;
     betaserie->searchShow(ui->_searchInput->text());

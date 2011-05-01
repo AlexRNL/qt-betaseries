@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QHttp>
-#include <QList>
 
 #include "showresult.h"
 
@@ -22,7 +21,7 @@ class Betaseries : public QObject {
 public:
     static Betaseries* getInstance(QObject *parent = 0);
     void getStatus ();
-    QList<ShowResult> searchShow(QString search);
+    void searchShow(QString search);
 
 private:
     ///Construtor

@@ -1,6 +1,7 @@
 #include "betaseries.h"
 
 #include <QUrl>
+#include <QDomDocument>
 
 Betaseries* Betaseries::_instance = NULL;
 
@@ -21,7 +22,39 @@ Betaseries* Betaseries::getInstance(QObject *parent) {
 
 //TODO handle id!
 void Betaseries::received (int id, bool error) {
-    emit done(error, _api->readAll());
+    QList<ShowResult> searchResult;
+    QDomDocument doc;
+    doc.setContent(_api->readAll());
+    QDomElement root = doc.documentElement();
+    root = root.firstChildElement();
+
+    while (!root.isNull()) {
+        if (root.tagName() == "shows") {
+            QDomElement show = root.firstChildElement();
+            while (!show.isNull()) {
+                ShowResult currentResult;
+                QDomElement showComponent = show.firstChildElement();
+                while (!showComponent.isNull()) {
+                    if (showComponent.tagName() == "url")
+                        currentResult.setURL(showComponent.text());
+                    else if (showComponent.tagName() == "title")
+                        currentResult.setTitle(showComponent.text());
+                    showComponent = showComponent.nextSiblingElement();
+                }
+                searchResult.append(currentResult);
+                show = show.nextSiblingElement();
+            }
+        }
+        root = root.nextSiblingElement();
+    }
+
+    QString result = "";
+    foreach (const ShowResult currentShow, searchResult) {
+        result += currentShow.toString() + "\n";
+    }
+    result.chop(1);
+
+    emit done(error, result);
 }
 
 void Betaseries::sent (int id) {
@@ -37,18 +70,11 @@ void Betaseries::getStatus() {
     _api->get(url.toString());
 }
 
-QList<ShowResult> Betaseries::searchShow(QString search) {
+void Betaseries::searchShow(QString search) {
     QUrl url;
     url.setPath("/shows/search.xml");
     url.addQueryItem("key", KEY);
     url.addQueryItem("user-agent", USER_AGENT);
     url.addQueryItem("title", search);
     _api->get(url.toString());
-
-    QList<ShowResult> searchResult;
-    ShowResult tmp("Test", "test");
-
-    searchResult.append(tmp);
-
-    return searchResult;
 }
