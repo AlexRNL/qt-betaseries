@@ -20,39 +20,29 @@ Betaseries* Betaseries::getInstance(QObject *parent) {
 }
 
 
-//TODO handle id!
+//TODO process errors
 void Betaseries::received (int id, bool error) {
-    QList<ShowResult> searchResult;
-    QDomDocument doc;
-    doc.setContent(_api->readAll());
-    QDomElement root = doc.documentElement();
-    root = root.firstChildElement();
+    QString result = "",
+            data(_api->readAll());
 
-    while (!root.isNull()) {
-        if (root.tagName() == "shows") {
-            QDomElement show = root.firstChildElement();
-            while (!show.isNull()) {
-                ShowResult currentResult;
-                QDomElement showComponent = show.firstChildElement();
-                while (!showComponent.isNull()) {
-                    if (showComponent.tagName() == "url")
-                        currentResult.setURL(showComponent.text());
-                    else if (showComponent.tagName() == "title")
-                        currentResult.setTitle(showComponent.text());
-                    showComponent = showComponent.nextSiblingElement();
-                }
-                searchResult.append(currentResult);
-                show = show.nextSiblingElement();
+    if (processErrors(data))
+        return;
+
+    switch (_requestQueue[id]) {
+        case SHOWS_SEARCH:
+            foreach (const ShowResult currentShow, ShowResult::processSearch(data)) {
+                result += currentShow.toString() + "\n";
             }
-        }
-        root = root.nextSiblingElement();
+            result.chop(1);
+            break;
+        case STATUS:
+            result = data;
+            break;
+        default:
+            result = data;
+            break;
     }
-
-    QString result = "";
-    foreach (const ShowResult currentShow, searchResult) {
-        result += currentShow.toString() + "\n";
-    }
-    result.chop(1);
+    _requestQueue.remove(id);
 
     emit done(error, result);
 }
@@ -67,7 +57,7 @@ void Betaseries::getStatus() {
 
     url.addQueryItem("key", KEY);
     url.addQueryItem("user-agent", USER_AGENT);
-    _api->get(url.toString());
+    _requestQueue.insert(_api->get(url.toString()), STATUS);
 }
 
 void Betaseries::searchShow(QString search) {
@@ -76,5 +66,41 @@ void Betaseries::searchShow(QString search) {
     url.addQueryItem("key", KEY);
     url.addQueryItem("user-agent", USER_AGENT);
     url.addQueryItem("title", search);
-    _api->get(url.toString());
+    _requestQueue.insert(_api->get(url.toString()), SHOWS_SEARCH);
+}
+
+//Try to get this const
+bool Betaseries::processErrors(QString data) {
+    QString errors = "";
+    QDomDocument doc;
+    doc.setContent(data);
+    QDomElement root = doc.documentElement();
+    root = root.firstChildElement();
+
+    while (!root.isNull()) {
+        if (root.tagName() == "errors") {
+            QDomElement error = root.firstChildElement();
+            while (!error.isNull()) {
+                errors += "Error(s):\n";
+                QDomElement errorComponent = error.firstChildElement();
+                while (!errorComponent.isNull()) {
+                    if (errorComponent.tagName() == "code")
+                        errors += "  Code: " + errorComponent.text()+"\n";
+                    else if (errorComponent.tagName() == "content")
+                        errors += "  Text: " + errorComponent.text()+"\n";
+                    errorComponent = errorComponent.nextSiblingElement();
+                }
+                error = error.nextSiblingElement();
+            }
+            errors.chop(1);
+        }
+        root = root.nextSiblingElement();
+    }
+
+    if (!errors.isEmpty()) {
+        emit wrongRequest(errors);
+        return true;
+    } else {
+        return false;
+    }
 }

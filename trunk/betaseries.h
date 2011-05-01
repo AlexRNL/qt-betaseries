@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QHttp>
+#include <QMap>
 
 #include "showresult.h"
 
@@ -24,17 +25,28 @@ public:
     void searchShow(QString search);
 
 private:
+    ///Types
+    enum RequestType {
+        STATUS,
+        SHOWS_SEARCH,
+        SHOWS_DISPLAY,
+        SHOWS_EPISODES,
+        SHOWS_ADD,
+        SHOWS_REMOVE,
+    };
     ///Construtor
     explicit Betaseries(QObject *parent = 0);
     ///Methods
-
+    bool processErrors(QString data);
     //Attributes
     QHttp* _api;
     static Betaseries* _instance;
+    QMap<int, RequestType> _requestQueue;
 
 signals:
     void done (bool error, QString data);
     void requestStarted (int id);
+    void wrongRequest (QString errors);
 
 public slots:
     void received (int id, bool error);

@@ -24,6 +24,7 @@ private slots:
     void on__sendRequest_clicked();
     void updateForm (bool error, QString data);
     void updateStatusBar (int id);
+    void critical (QString errorText);
 };
 
 #endif // MAINWINDOW_H
