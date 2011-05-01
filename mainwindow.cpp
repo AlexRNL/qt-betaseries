@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QUrl>
+
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -10,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(betaserie, SIGNAL(done(bool,QString)), this, SLOT(updateForm(bool,QString)));
     connect(betaserie, SIGNAL(requestStarted(int)), this, SLOT(updateStatusBar(int)));
+    connect(betaserie, SIGNAL(wrongRequest(QString)), this, SLOT(critical(QString)));
 }
 
 MainWindow::~MainWindow() {
@@ -33,4 +35,8 @@ void MainWindow::updateForm (bool error, QString data) {
 
 void MainWindow::updateStatusBar (int id) {
     ui->statusBar->showMessage("Sending request...");
+}
+
+void MainWindow::critical(QString errorText) {
+    QMessageBox::critical(this, "Error !", errorText);
 }

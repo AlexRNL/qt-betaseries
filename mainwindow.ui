@@ -14,41 +14,39 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="_sendRequest">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
+   <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>40</x>
       <y>30</y>
-      <width>91</width>
-      <height>23</height>
+      <width>451</width>
+      <height>281</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Send request</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="_result">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>100</y>
-      <width>381</width>
-      <height>211</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="_searchInput">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>30</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLineEdit" name="_searchInput"/>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="_sendRequest">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Send request</string>
+       </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QTextEdit" name="_result"/>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

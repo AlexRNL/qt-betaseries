@@ -1,5 +1,7 @@
 #include "showresult.h"
 
+#include <QDomDocument>
+
 ShowResult::ShowResult (QObject *parent) :
     QObject(parent) {
 
@@ -41,4 +43,33 @@ void ShowResult::setURL (QString url) {
 
 QString ShowResult::toString () const {
     return getTitle() + " (" + getURL() + ")";
+}
+
+QList<ShowResult> ShowResult::processSearch(QString data) {
+    QList<ShowResult> searchResult;
+    QDomDocument doc;
+    doc.setContent(data);
+    QDomElement root = doc.documentElement();
+    root = root.firstChildElement();
+
+    while (!root.isNull()) {
+        if (root.tagName() == "shows") {
+            QDomElement show = root.firstChildElement();
+            while (!show.isNull()) {
+                ShowResult currentResult;
+                QDomElement showComponent = show.firstChildElement();
+                while (!showComponent.isNull()) {
+                    if (showComponent.tagName() == "url")
+                        currentResult.setURL(showComponent.text());
+                    else if (showComponent.tagName() == "title")
+                        currentResult.setTitle(showComponent.text());
+                    showComponent = showComponent.nextSiblingElement();
+                }
+                searchResult.append(currentResult);
+                show = show.nextSiblingElement();
+            }
+        }
+        root = root.nextSiblingElement();
+    }
+    return searchResult;
 }
