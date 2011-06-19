@@ -2,6 +2,8 @@
 
 #include <QUrl>
 #include <QDomDocument>
+#include "requeststatus.h"
+#include "requestshowsearch.h"
 
 Betaseries* Betaseries::_instance = NULL;
 
@@ -22,29 +24,18 @@ Betaseries* Betaseries::getInstance(QObject *parent) {
 
 //TODO process errors
 void Betaseries::received (int id, bool error) {
-    QString result = "",
-            data(_api->readAll());
+    QString data(_api->readAll());
+    QString* result;
 
     if (processErrors(data))
         return;
 
-    switch (_requestQueue[id]) {
-        case SHOWS_SEARCH:
-            foreach (const ShowResult currentShow, ShowResult::processSearch(data)) {
-                result += currentShow.toString() + "\n";
-            }
-            result.chop(1);
-            break;
-        case STATUS:
-            result = data;
-            break;
-        default:
-            result = data;
-            break;
-    }
+    result = static_cast<QString*> (_requestQueue[id]->processResult(data));
+
+    delete _requestQueue[id];
     _requestQueue.remove(id);
 
-    emit done(error, result);
+    emit done(error, *result);
 }
 
 void Betaseries::sent (int id) {
@@ -52,21 +43,13 @@ void Betaseries::sent (int id) {
 }
 
 void Betaseries::getStatus() {
-    QUrl url;
-    url.setPath("/status.xml");
-
-    url.addQueryItem("key", KEY);
-    url.addQueryItem("user-agent", USER_AGENT);
-    _requestQueue.insert(_api->get(url.toString()), STATUS);
+    RequestStatus *req = new RequestStatus();
+    _requestQueue.insert(_api->get(req->getRequest()), req);
 }
 
 void Betaseries::searchShow(QString search) {
-    QUrl url;
-    url.setPath("/shows/search.xml");
-    url.addQueryItem("key", KEY);
-    url.addQueryItem("user-agent", USER_AGENT);
-    url.addQueryItem("title", search);
-    _requestQueue.insert(_api->get(url.toString()), SHOWS_SEARCH);
+    RequestShowSearch *req = new RequestShowSearch(search);
+    _requestQueue.insert(_api->get(req->getRequest()), req);
 }
 
 //Try to get this const

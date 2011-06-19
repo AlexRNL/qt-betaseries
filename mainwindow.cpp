@@ -19,6 +19,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on__sendRequest_clicked() {
+    //betaserie->getStatus();
     if (ui->_searchInput->text().isEmpty())
         return;
     betaserie->searchShow(ui->_searchInput->text());

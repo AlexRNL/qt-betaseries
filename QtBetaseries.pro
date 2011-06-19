@@ -13,11 +13,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     betaseries.cpp \
-    showresult.cpp
+    showresult.cpp \
+    request.cpp \
+    requeststatus.cpp \
+    requestshowsearch.cpp
 
 HEADERS  += mainwindow.h \
     betaseries.h \
-    showresult.h
+    showresult.h \
+    request.h \
+    requeststatus.h \
+    requestshowsearch.h
 
 FORMS    += mainwindow.ui
 
