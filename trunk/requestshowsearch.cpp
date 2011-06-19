@@ -1,5 +1,6 @@
 #include "requestshowsearch.h"
 #include "showresult.h"
+#include <QStringList>
 
 RequestShowSearch::RequestShowSearch(QString strSearch) :
         Request(), _path("/shows/search.xml"), _strSearch(strSearch) {
@@ -24,10 +25,9 @@ void RequestShowSearch::setStrSearch(QString strSearch) {
 }
 
 void* RequestShowSearch::processResult(QString data) {
-    QString *result = new QString;
+    QStringList *result = new QStringList();
     foreach (const ShowResult currentShow, ShowResult::processSearch(data)) {
-        *result += currentShow.toString() + "\n";
+        *result << currentShow.toString();
     }
-    result->chop(1);
     return result;
 }

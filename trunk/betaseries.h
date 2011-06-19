@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QHttp>
 #include <QMap>
+#include <QStringList>
 
 #include "showresult.h"
 #include "request.h"
@@ -32,7 +33,7 @@ private:
     QMap<int, Request*> _requestQueue;
 
 signals:
-    void done (bool error, QString data);
+    void done (bool error, QStringList data);
     void requestStarted (int id);
     void wrongRequest (QString errors);
 

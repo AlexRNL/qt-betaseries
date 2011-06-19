@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(QIcon(":/icons/favicon"));
     betaserie = Betaseries::getInstance(this);
 
-    connect(betaserie, SIGNAL(done(bool,QString)), this, SLOT(updateForm(bool,QString)));
+    connect(betaserie, SIGNAL(done(bool,QStringList)), this, SLOT(updateForm(bool,QStringList)));
     connect(betaserie, SIGNAL(requestStarted(int)), this, SLOT(updateStatusBar(int)));
     connect(betaserie, SIGNAL(wrongRequest(QString)), this, SLOT(critical(QString)));
 }
@@ -25,11 +25,12 @@ void MainWindow::on__sendRequest_clicked() {
     betaserie->searchShow(ui->_searchInput->text());
 }
 
-void MainWindow::updateForm (bool error, QString data) {
+void MainWindow::updateForm (bool error, QStringList data) {
+    ui->_result->clear();
     if (!error) {
-        ui->_result->setText(data);
+        ui->_result->addItems(data);
     } else {
-        ui->_result->setText("Fail...");
+        ui->_result->addItem("Fail...");
     }
     ui->statusBar->showMessage("Done");
 }
