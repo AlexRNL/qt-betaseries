@@ -21,16 +21,14 @@ Betaseries* Betaseries::getInstance(QObject *parent) {
     return Betaseries::_instance;
 }
 
-
-//TODO process errors
 void Betaseries::received (int id, bool error) {
     QString data(_api->readAll());
-    QString* result;
+    QStringList* result;
 
     if (processErrors(data))
         return;
 
-    result = static_cast<QString*> (_requestQueue[id]->processResult(data));
+    result = static_cast<QStringList*> (_requestQueue[id]->processResult(data));
 
     delete _requestQueue[id];
     _requestQueue.remove(id);
