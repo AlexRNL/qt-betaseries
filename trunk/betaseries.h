@@ -6,11 +6,7 @@
 #include <QMap>
 
 #include "showresult.h"
-
-#define DOMAIN "api.betaseries.com"
-#define PORT_HTTP 80
-#define KEY "4b4b65a6071d"
-#define USER_AGENT "QtBetaseries"
+#include "request.h"
 
 /**
   * Class which handles the requests to the API of Betaseries.
@@ -23,17 +19,9 @@ public:
     static Betaseries* getInstance(QObject *parent = 0);
     void getStatus ();
     void searchShow(QString search);
+    void displayShow(QString url);
 
 private:
-    ///Types
-    enum RequestType {
-        STATUS,
-        SHOWS_SEARCH,
-        SHOWS_DISPLAY,
-        SHOWS_EPISODES,
-        SHOWS_ADD,
-        SHOWS_REMOVE,
-    };
     ///Construtor
     explicit Betaseries(QObject *parent = 0);
     ///Methods
@@ -41,7 +29,7 @@ private:
     //Attributes
     QHttp* _api;
     static Betaseries* _instance;
-    QMap<int, RequestType> _requestQueue;
+    QMap<int, Request*> _requestQueue;
 
 signals:
     void done (bool error, QString data);
